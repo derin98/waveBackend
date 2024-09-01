@@ -1,6 +1,6 @@
-const productManagementModels = require("./productManagement");
+const productAndProjectManagementModels = require("./productAndProjectManagement");
 
 
 module.exports = {
-    productManagementModels,
+    productAndProjectManagementModels,
 };
