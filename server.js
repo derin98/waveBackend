@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const { serverConfigs } = require("./src/configs");
-const { establistMongoDbConnection, getMongoDBStatus } = require("./src/utils/mongoDb_utils");
+const { mongoDbUtils: { establistMongoDbConnection, getMongoDBStatus } } = require("./src/utils");
 app.use(express.json());
 
 //root api
