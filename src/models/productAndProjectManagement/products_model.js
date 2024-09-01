@@ -15,14 +15,6 @@ const productSchema = new mongoose.Schema({
         type: mongoose.SchemaTypes.ObjectId,
         ref: "User",
         required: true
-    },
-    createdAt: {
-        type: mongoose.SchemaTypes.Date,
-        default: Date.now
-    },
-    updatedAt: {
-        type: Date,
-        default: Date.now
     }
 });
 
