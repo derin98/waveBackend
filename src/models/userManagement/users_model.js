@@ -1,31 +1,67 @@
 const mongoose = require("mongoose");
 
+const { constants: { countryAndCallingCodeConstants: { countryCodesObject }
+    , userManagementConstants: { userConstants: { userStatus, userRoles, departments, designations } } } } = require("../../utils");
+
+const { userManagementConfigs: { authConfigs: { PASSWORD_EXPIRY_AT, PASSWORD_ATTEMPTS, OTP_ATTEMPTS, OTP_EXPIRY_AT } } } = require("../../configs");
+
 const userSchema = new mongoose.Schema({
-    name: { type: String, required: true },
+    firstName: { type: String, required: true },
+    lastName: { type: String, required: true },
     email: { type: String, required: true },
     authentication: {
         password: { type: String, required: true },
-        passwordExpiresAt: { type: Date, default: Date.now },
-        passwordAttempts: { type: Number, default: 0 },
+        passwordExpiresAt: { type: Date, default: PASSWORD_EXPIRY_AT },
+        passwordAttempts: { type: Number, default: PASSWORD_ATTEMPTS },
         isBlocked: { type: Boolean, default: false },
         refreshToken: { type: String },
         refreshTokenExpiresAt: { type: Date },
         otp: { type: String },
-        otpExpiresAt: { type: Date },
-        otpAttempts: { type: Number, default: 0 },
+        otpExpiresAt: { type: Date, default: OTP_EXPIRY_AT },
+        otpAttempts: { type: Number, default: OTP_ATTEMPTS },
+        isVerified: { type: Boolean, default: false },
+        verificationDate: { type: Date },
     },
-   
-    role: { type: String, enum: Object.values(userRoles()), required: true },
-    department: { type: mongoose.Schema.Types.ObjectId, ref: 'Department' },
+    contactNumber: {
+        primaryPhoneNumber: { type: String, },
+        primaryCountryCode: { type: String, enum: Object.keys(countryCodesObject) }, // Added country code
+    },
+
+    // role: { type: String, enum: Object.keys(userRoles), required: true },
+    // status: { type: String, enum: Object.keys(userStatus), required: true },
+    // department: { type: String, enum: Object.keys(departments) },
+    // designation: {
+    //     type: String,
+    //     validate: {
+    //         validator: function (value) {
+    //             if (designations[this.department] && designations[this.department][value]) {
+    //                 return true;
+    //             }
+    //             return false;
+    //         },
+    //         message: props => `${props.value} is not a valid designation for the selected department`
+    //     }
+    // },
+    organizations: [{
+        id: {
+            type: mongoose.SchemaTypes.ObjectId,
+            ref: "Organization",
+            required: true // Optional: enforce that an organization must be provided
+        },
+        noOfIntractions: { type: Number, default: 0 },
+        subscriptionType: {
+            type: String,
+            enum: ["Free", "Paid"],
+            default: "Free" // Optional: set a default value
+        }
+    }],
     createdBy: {
         type: mongoose.SchemaTypes.ObjectId,
         ref: "User",
-        required: true
     },
     updatedBy: {
         type: mongoose.SchemaTypes.ObjectId,
         ref: "User",
-        required: true
     },
     createdAt: {
         type: mongoose.SchemaTypes.Date,
@@ -51,17 +87,10 @@ userSchema.set('toJSON', {
 });
 
 
-function userRoles () { 
-    return {
-        SUPER_ADMIN: 'Command Center',
-        ADMIN: 'Chief',
-        PROJECT_MANAGER: 'Strategist',
-        HUMAN_RESOURCES: 'Culture Curator',
-        DEVELOPER: 'Artisan',
-        TESTER: 'Detective',
-        INTERN: 'Future Leader'
-    }
-}
+// userSchema.statics = {
+//     userRoles: userRoles,
+//     contactMethods: contactMethods
+// }
 
 const Users = mongoose.model("User", userSchema, "users");
-module.exports = { Users, userRoles };
+module.exports = { Users };
