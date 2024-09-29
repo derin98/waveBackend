@@ -1,24 +1,18 @@
-const { parsePhoneNumberFromString } = require ('libphonenumber-js');
-const { responseManagers: { errorResponseManager: { errorResponse }, successResponseManager: { successResponse } } } = require("../../managers");
-const { constants: { countryAndCallingCodeConstants: { countryCodesObject }} } = require("../../utils");
-
+const { parsePhoneNumberFromString } = require('libphonenumber-js');
+const { constants: { countryAndCallingCodeConstants: { countryCodesObject } } } = require("../../utils");
 
 const isValidContactNumberBasedOnCountryCode = (contactNumber, countryCode) => {
     try {
-        // Convert contact number to string if it is a number
         if (typeof contactNumber === 'number') {
             contactNumber = contactNumber.toString();
         }
 
-        // Ensure contact number is a valid string
         if (typeof contactNumber !== 'string') {
             throw new Error('Contact number must be a string or a number.');
         }
 
-        // Parse the phone number using the provided contact number and country code
         const phoneNumber = parsePhoneNumberFromString(contactNumber, countryCode);
 
-        // Check if the phone number is valid
         if (phoneNumber && phoneNumber.isValid()) {
             return true;
         } else {
@@ -31,24 +25,20 @@ const isValidContactNumberBasedOnCountryCode = (contactNumber, countryCode) => {
 };
 
 const validatePhoneNumberBasedOnCountryCode = (contactNumber, countryCode) => {
-    if (isValidContactNumberBasedOnCountryCode(contactNumber, countryCode)) {
-        return;
+    // if (!isValidContactNumberBasedOnCountryCode(contactNumber, countryCode)) {
+    //     throw new Error("Invalid Contact Number");
+    // }
+    try {
+        (isValidContactNumberBasedOnCountryCode(contactNumber, countryCode))
+    } catch (error) {
+        throw error;
     }
-    else {
-        throw new Error("Invalid Contact Number");
-    }
-    
 }
 
 const validateCountryCode = (countryCode) => {
-    if (countryCodesObject[countryCode]) {
-        return;
-    }
-    else {
-        throw new Error( "Invalid Country Code");
+    if (!countryCodesObject[countryCode]) {
+        throw new Error("Invalid Country Code");
     }
 }
-
-
 
 module.exports = { validatePhoneNumberBasedOnCountryCode, validateCountryCode, isValidContactNumberBasedOnCountryCode }

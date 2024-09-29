@@ -12,13 +12,13 @@ const userSchema = new mongoose.Schema({
     authentication: {
         password: { type: String, required: true },
         passwordExpiresAt: { type: Date, default: PASSWORD_EXPIRY_AT },
-        passwordAttempts: { type: Number, default: PASSWORD_ATTEMPTS },
+        passwordAttempts: { type: Number, default: 0 },
         isBlocked: { type: Boolean, default: false },
         refreshToken: { type: String },
         refreshTokenExpiresAt: { type: Date },
         otp: { type: String },
         otpExpiresAt: { type: Date, default: OTP_EXPIRY_AT },
-        otpAttempts: { type: Number, default: OTP_ATTEMPTS },
+        otpAttempts: { type: Number, default: 0 },
         isVerified: { type: Boolean, default: false },
         verificationDate: { type: Date },
     },
@@ -28,7 +28,7 @@ const userSchema = new mongoose.Schema({
     },
 
     // role: { type: String, enum: Object.keys(userRoles), required: true },
-    // status: { type: String, enum: Object.keys(userStatus), required: true },
+    status: { type: String, enum: Object.keys(userStatus), required: true },
     // department: { type: String, enum: Object.keys(departments) },
     // designation: {
     //     type: String,
@@ -43,17 +43,9 @@ const userSchema = new mongoose.Schema({
     //     }
     // },
     organizations: [{
-        id: {
             type: mongoose.SchemaTypes.ObjectId,
             ref: "Organization",
             required: true // Optional: enforce that an organization must be provided
-        },
-        noOfIntractions: { type: Number, default: 0 },
-        subscriptionType: {
-            type: String,
-            enum: ["Free", "Paid"],
-            default: "Free" // Optional: set a default value
-        }
     }],
     createdBy: {
         type: mongoose.SchemaTypes.ObjectId,

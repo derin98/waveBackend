@@ -72,7 +72,9 @@ const constructQueryParams = (reqQuery, Model) => {
 
         if (reqQuery.name || reqQuery.names) {
             if (reqQuery.names) {
-                query.name = { $in: reqQuery.names.split(",") };
+                let names = reqQuery.names.split(",")
+                // implement regex for names
+                query.name = { $in: names.map(name => new RegExp(name, "i")) };
             } else {
                 query.name = { $regex: new RegExp(reqQuery.name, "i") };
             }

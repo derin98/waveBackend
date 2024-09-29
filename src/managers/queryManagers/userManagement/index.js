@@ -1,4 +1,4 @@
-const userQueryManager = require("./userManagement_queryManagers");
+const userQueryManager = require("./user_queryManagers");
 
 
 module.exports = {

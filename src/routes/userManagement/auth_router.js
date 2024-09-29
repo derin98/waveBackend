@@ -1,16 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const { userManagementMiddlewares: { authMiddlewares } } = require ("../../middlewares")
+const { userManagementMiddlewares: { authMiddlewares: { signUpRequestValidation, hashPasswordAfterValidation } } } = require("../../middlewares")
+const { userManagementControllers: { userControllers: { createUser_controller} } } = require("../../controllers");
 
 
-router.post('/signUp', [authMiddlewares.signUpRequestValidation], (req, res) => {
-    const { username, password } = req.body;
-    // Add logic to authenticate user
-    res.send({
-        message: "Sign-in successful",
-        token: "jwt_token_here" // Replace with actual token generation
-    });
-});
+router.post('/signUp', [signUpRequestValidation, hashPasswordAfterValidation], createUser_controller );
 
 // Example route for user login
 router.post('/login', (req, res) => {
